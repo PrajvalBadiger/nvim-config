@@ -2,7 +2,11 @@
 return {
 	"typicode/bg.nvim",
 
-	"ellisonleao/gruvbox.nvim",
+	{
+		"ellisonleao/gruvbox.nvim",
+		priority = 1000,
+
+	},
 
 	{
 		"catppuccin/nvim",
@@ -13,8 +17,4 @@ return {
 		"rose-pine/nvim",
 		name = "rose-pine",
 	},
-
-	"sainnhe/everforest",
-
-	"savq/melange-nvim"
 }

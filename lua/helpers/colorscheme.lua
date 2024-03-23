@@ -15,11 +15,27 @@ local function get_if_available(name, opts)
 	return "default"
 end
 
+local opts = {
+	undercurl = true,
+	underline = true,
+	bold = true,
+	italic = {
+		strings = true,
+		comments = true,
+		operators = false,
+		folds = true,
+	},
+	strikethrough = true,
+	invert_selection = true,
+	invert_signs = true,
+	invert_intend_guides = true,
+	inverse = true,
+	transparent_mode = true,
+}
+
 -- Uncomment the colorscheme to use
 -- local colorscheme = get_if_available("catppuccin")
-local colorscheme = get_if_available('gruvbox')
+local colorscheme = get_if_available('gruvbox', opts)
 -- local colorscheme = get_if_available('rose-pine')
--- local colorscheme = get_if_available('everforest')
--- local colorscheme = get_if_available('melange')
 
 return colorscheme
