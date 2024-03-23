@@ -8,12 +8,16 @@ return {
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 		},
+        event = "BufRead",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				-- Add languages to be installed here that you want installed for treesitter
 				ensure_installed = { "c", "cpp", "go", "lua", "python", "rust", "vimdoc", "vim" },
-
-				highlight = { enable = true },
+                auto_install = true,
+				highlight = {
+                    enable = true,
+                    additional_vim_regex_highlighting = { "markdown" },
+                },
 				indent = { enable = true, disable = { "python" } },
 				incremental_selection = {
 					enable = true,
@@ -60,6 +64,18 @@ return {
 					},
 				},
 			})
+
+            local treesitter_parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+            treesitter_parser_config.templ = {
+                install_info = {
+                    url = "https://github.com/vrischmann/tree-sitter-templ.git",
+                    files = { "src/parser.c", "src/scanner.c" },
+                    branch = "master",
+                },
+            }
+
+            vim.treesitter.language.register("templ", "templ")
+
 		end,
 	},
 }
