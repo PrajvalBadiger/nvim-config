@@ -1,14 +1,58 @@
--- Telescope fuzzy finding (all the things)
 return {
     "nvim-telescope/telescope.nvim",
-    branch = "0.1.x",
+    cmd = "Telescope",
+    version = false,
     dependencies = {
-        "nvim-lua/plenary.nvim",
-        -- Fuzzy Finder Algorithm which requires local dependencies to be built. Only load if `make` is available
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make", cond = vim.fn.executable("make") == 1 },
+        "nvim-lua/plenary.nvim"
     },
-    config = function()
-        require("telescope").setup({
+    keys = {
+        {
+            "<leader>pf",
+            function()
+                require("telescope.builtin").find_files()
+            end,
+            desc = "Find Files"
+        },
+        {
+            "<C-p>",
+            function()
+                require("telescope.builtin").git_files()
+            end,
+            desc = "Git Files"
+        },
+        { '<leader>pws',
+            function()
+                local word = vim.fn.expand("<cword>")
+                require("telescope.builtin").grep_string({ search = word })
+            end
+        },
+        { '<leader>pWs',
+            function()
+                local word = vim.fn.expand("<cWORD>")
+                require("telescope.builtin").grep_string({ search = word })
+            end
+        },
+        {
+            '<leader>ps',
+            function()
+                require("telescope.builtin").grep_string({ search = vim.fn.input("Grep > ") })
+            end,
+            desc = 'Builtin grep'
+        },
+        {
+            '<leader>vh',
+            function()
+                require("telescope.builtin").help_tags()
+            end,
+            desc = 'Help tags'
+        }
+
+
+    },
+    opts = function()
+        local actions = require("telescope.actions")
+
+        return {
             defaults = {
                 winblend = 0,
 
@@ -44,40 +88,32 @@ return {
                 selection_strategy = "reset",
                 sorting_strategy = "ascending",
                 scroll_strategy = "cycle",
+
+                prompt_prefix = " ",
+                selection_caret = " ",
+                -- open files in the first window that is an actual file.
+                -- use the current window if no other window is available.
+                get_selection_window = function()
+                    local wins = vim.api.nvim_list_wins()
+                    table.insert(wins, 1, vim.api.nvim_get_current_win())
+                    for _, win in ipairs(wins) do
+                        local buf = vim.api.nvim_win_get_buf(win)
+                        if vim.bo[buf].buftype == "" then
+                            return win
+                        end
+                    end
+                    return 0
+                end,
+                mappings = {
+                    i = {
+                        ["<C-d>"] = actions.preview_scrolling_down,
+                        ["<C-u>"] = actions.preview_scrolling_up,
+                    },
+                    n = {
+                        ["q"] = actions.close,
+                    },
+                },
             },
-        })
-
-        -- Enable telescope fzf native, if installed
-        pcall(require("telescope").load_extension, "fzf")
-
-        local builtin = require('telescope.builtin')
-        local map = require("helpers.keys").map
-        map("n", "<leader>fr", builtin.oldfiles, "Recently opened")
-        map("n", "<leader><space>", builtin.buffers, "Open buffers")
-        map("n", "<leader>/", function()
-            -- You can pass additional configuration to telescope to change theme, layout, etc.
-            builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-                winblend = 0,
-                previewer = false,
-            }))
-        end, "Search in current buffer")
-
-        map("n", "<leader>pf", builtin.find_files, "Files")
-        map("n", "<leader>vh", builtin.help_tags, "Help")
-        map("n", "<leader>pg", builtin.live_grep, "Grep")
-        map("n", "<leader>pd", builtin.diagnostics, "Diagnostics")
-        map("n", "<leader>km", builtin.keymaps, "Search keymaps")
-        map('n', '<C-p>', builtin.git_files, "Git files")
-        map('n', '<leader>pws', function()
-            local word = vim.fn.expand("<cword>")
-            builtin.grep_string({ search = word })
-        end, "Grep word")
-        map('n', '<leader>pWs', function()
-            local word = vim.fn.expand("<cWORD>")
-            builtin.grep_string({ search = word })
-        end, "Grep whole word")
-        map('n', '<leader>ps', function()
-            builtin.grep_string({ search = vim.fn.input("Grep > ") })
-        end, "Builtin grep")
-    end,
+        }
+    end
 }
