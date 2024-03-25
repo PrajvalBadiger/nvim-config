@@ -1,7 +1,5 @@
 -- Themes
 return {
-	"typicode/bg.nvim",
-
 	{
 		"ellisonleao/gruvbox.nvim",
 		priority = 1000,
