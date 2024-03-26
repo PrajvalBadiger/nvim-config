@@ -6,12 +6,10 @@ This is a basic, minimal-ish jump-off point for your Neovim journey utilizing [l
 - `plugins`: Each of the .lua files in this directory should serve as a lazy.nvim plugin spec
 
 ## Quickstart
-If you're on a Linux system with `stow` installed, you can simply run
-
+You can run
 ```sh
-stow --verbose --target=$HOME .
+./dev
 ```
-
 from the root directory of this repository and be up and running!
 
 lazy.nvim will handle the bootstrapping process on first launch. If you run into any issues, try closing Neovim and restarting it again after lazy.nvim has performed the intial bootstrap.
